@@ -56,4 +56,32 @@ class MovieController extends Controller
         return redirect('/movies');
     }
 
+    public function show(\App\Movie $movie)
+    {
+        return view('movie.show', compact('movie'));
+    }
+
+    public function edit(\App\Movie $movie)
+    {
+        return view('movie.edit', compact('movie'));
+    }
+
+    public function update(\App\Movie $movie)
+    {
+        $data = request()->validate([
+            'title' => 'required|min:2|max:255',
+            'seen' => 'boolean'
+        ]);
+
+        $movie->update($data);
+        
+        return redirect('/movies');
+    }
+
+    public function destroy(\App\Movie $movie)
+    {
+        $movie->delete();
+        return redirect('/movies');
+    }
+
 }

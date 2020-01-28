@@ -35,24 +35,6 @@
                         </ul>
                     </div>
 
-
-                    <div>
-                        <h2>Seen</h2>
-                        <ul>
-                            <a href='#'><li>The Imitation Game</li></a>
-                            <a href='#'><li>Ready Player One</li></a>
-                            <a href='#'><li>Star Wars: The Rise of Skywalker </li></a>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h2>Not seen</h2>
-                        <ul>
-                            <a href='#'><li>Knives Out</li></a>
-                            <a href='#'><li>1917</li></a>
-                        </ul>
-                    </div>
-
                 </div>
             </div>
         </div>

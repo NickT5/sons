@@ -17,6 +17,7 @@ class CreateMoviesTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->boolean('seen');
+            $table->unsignedBigInteger('user_id'); // Foreign key to User.php, default foreign key is relation method with _id suffix.
             $table->timestamps();
         });
     }

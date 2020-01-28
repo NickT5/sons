@@ -18,6 +18,9 @@ class MovieController extends Controller
         // Fetch all movies.
         $movies = \App\Movie::all();
 
+#        $seen_movies = \App\Movie::findOrFail()->user()->where('seen', '1')->all();
+        #dd($seen_movies);
+
         return view('movie.index', compact('movies'));
     }
 
@@ -35,11 +38,15 @@ class MovieController extends Controller
         ]);
 
         // Create new movie, set attributes and save to the database.
-        $movie = new \App\Movie;
+        /*$movie = new \App\Movie;
         $movie->title = $data['title'];
         $movie->seen = $data['seen'];
         $movie->save();
-        // \App\Movie::create($data);  // Alternative
+        */ 
+
+        $movie = auth()->user()->movies()->create($data);  // Insert a new movie record with request data and the authenticated user.
+        
+        dd($movie);
 
         return redirect('/movies');
     }

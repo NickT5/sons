@@ -36,4 +36,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Define relation to a Movie. 
+    // Get the movie record(s) associated with the user.
+    public function movies()
+    {
+        return $this->hasMany(Movie::class);
+    }
 }

@@ -25,7 +25,7 @@
                             </div>
                         </div>
 
-                        <div>
+                        <div class="d-flex justify-content-between">
                             <a href='/movies/{{$movie->id}}' class="btn btn-primary">Go back</a>
                             <button type="submit" class="btn btn-primary">Edit</button>
                         </div>

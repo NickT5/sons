@@ -24,7 +24,7 @@
                             </div>
                         </div>
 
-                        <div>
+                        <div class="d-flex justify-content-between">
                             <a href='/movies' class="btn btn-primary">Go back</a>
                             <button type="submit" class="btn btn-primary">Add movie</button>
                         </div>

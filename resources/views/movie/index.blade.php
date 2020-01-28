@@ -14,15 +14,27 @@
                     </div>
 
                     <div>
-                        <h2>All movies</h2>
+                        <h2>Seen</h2>
                         <ul>
-                        @forelse($movies as $movie)
-                            <li> {{ $movie->title }} </li>
-                        @empty
-                            <p>You haven't added any movies yet.</p>
-                        @endforelse
+                            @forelse($movies_seen as $movie)
+                                <a href='/movies/{{$movie->id}}'><li> {{ $movie->title }} </li></a>
+                            @empty
+                                <p>You haven't added any movies yet.</p>
+                            @endforelse
                         </ul>
                     </div>
+
+                    <div>
+                        <h2>Not seen</h2>
+                        <ul>
+                            @forelse($movies_notseen as $movie)
+                                <a href='/movies/{{$movie->id}}'><li> {{ $movie->title }} </li></a>
+                            @empty
+                                <p>You haven't added any movies yet.</p>
+                            @endforelse
+                        </ul>
+                    </div>
+
 
                     <div>
                         <h2>Seen</h2>

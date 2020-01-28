@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MovieController extends Controller
 {
@@ -16,12 +17,18 @@ class MovieController extends Controller
     public function index()
     {
         // Fetch all movies.
-        $movies = \App\Movie::all();
+        //$movies = \App\Movie::all();
 
-#        $seen_movies = \App\Movie::findOrFail()->user()->where('seen', '1')->all();
-        #dd($seen_movies);
+        $movies_seen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
+                        ['user_id' => auth()->user()->id,
+                         'seen' => "1"]);
+        $movies_notseen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
+                        ['user_id' => auth()->user()->id,
+                         'seen' => "0"]);
+        #dd($movies_seen);
 
-        return view('movie.index', compact('movies'));
+
+        return view('movie.index', compact('movies_seen', 'movies_notseen'));
     }
 
     public function create()
@@ -46,8 +53,6 @@ class MovieController extends Controller
 
         $movie = auth()->user()->movies()->create($data);  // Insert a new movie record with request data and the authenticated user.
         
-        dd($movie);
-
         return redirect('/movies');
     }
 

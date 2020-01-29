@@ -25,8 +25,6 @@ class MovieController extends Controller
         $movies_notseen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
                         ['user_id' => auth()->user()->id,
                          'seen' => "0"]);
-        #dd($movies_seen);
-
 
         return view('movie.index', compact('movies_seen', 'movies_notseen'));
     }
@@ -44,12 +42,21 @@ class MovieController extends Controller
             'seen' => 'boolean'
         ]);
 
-        // Create new movie, set attributes and save to the database.
-        /*$movie = new \App\Movie;
-        $movie->title = $data['title'];
-        $movie->seen = $data['seen'];
-        $movie->save();
-        */ 
+
+        // Make Http GET request to a 3rd party API (= OMDb api), to get more information about the movie.
+        $http_client = new \GuzzleHttp\Client();
+        $omdbapi = "http://www.omdbapi.com/?apikey=88076cbf";
+        $title = str_replace(' ', '+', $data['title']);
+        $uri = "{$omdbapi}&t={$title}";
+        $response = $http_client->get($uri);
+        $code = $response->getStatusCode();
+        $type =  $response->getHeaderLine('content-type');
+        $body = $response->getBody();
+
+       $info = json_decode($response->getBody()->getContents(), true);
+
+        print $info['Year'] .", ". $info['Runtime'];
+        dd($info);
 
         $movie = auth()->user()->movies()->create($data);  // Insert a new movie record with request data and the authenticated user.
         

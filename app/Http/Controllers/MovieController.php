@@ -49,14 +49,19 @@ class MovieController extends Controller
         $title = str_replace(' ', '+', $data['title']);
         $uri = "{$omdbapi}&t={$title}";
         $response = $http_client->get($uri);
-        $code = $response->getStatusCode();
-        $type =  $response->getHeaderLine('content-type');
-        $body = $response->getBody();
+        $info = json_decode($response->getBody()->getContents(), true);
 
-       $info = json_decode($response->getBody()->getContents(), true);
-
-        print $info['Year'] .", ". $info['Runtime'];
-        dd($info);
+        if(!isset($info['Error']))
+        {
+            $data['year'] = $info['Year'];
+            $data['genre'] = $info['Genre'];
+            $data['stars'] = $info['Actors'];
+            $data['poster'] = $info['Poster'];
+            $data['rating'] = $info['imdbRating'];
+            $data['runtime'] = $info['Runtime'];
+            $data['director'] = $info['Director'];
+            $data['description'] = $info['Plot'];
+        }
 
         $movie = auth()->user()->movies()->create($data);  // Insert a new movie record with request data and the authenticated user.
         

@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Movie extends Model
 {
-    protected $fillable = ['title', 'seen', 'user_id']; // Fields inside the $fillable property can be mass assigned using Eloquent’s create() and update() methods.
+    // Fields inside the $fillable property can be mass assigned using Eloquent’s create() and update() methods.
+    protected $fillable = ['title', 'seen', 'year', 'genre', 'stars', 'poster', 'rating', 'runtime', 'director', 'description', 'user_id']; 
     //protected $guarded = [];  // Alternative for $fillable.
 
     // Define the inverse relation to the User. 

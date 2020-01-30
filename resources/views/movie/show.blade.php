@@ -5,11 +5,15 @@
     <h1 class="my-4">Movie page</h1>
 
     <div class="row">
-        <div class="col-md-5">
-            <img class="img-fluid" src="{{asset('img/750x500.png')}}" alt="">
+        <div class="col-md-3">
+            @if( isset($movie->poster ))
+                <img class="img-fluid" src="data:image/jpeg;base64,{{ base64_encode(file_get_contents($movie->poster)) }}" style="display:block; max-width:500px; max-height:350px; width: auto; height: auto;" alt="Movie poster">
+            @else
+                <img class="img-fluid" src="{{ asset('img/default-movie-poster.jpg') }}" style="width:750; height:500;" alt="Movie poster">
+            @endif
         </div>
 
-        <div class="col-md-7">
+        <div class="col-md-9">
             <h3 class="my-3">Movie details</h3>
             <ul>
                 @foreach($movie->getAttributes() as $key => $value)
@@ -17,7 +21,7 @@
                         @if($value != "")
                             <li>{{ ucfirst($key) }} - <strong>{{ $value }}</strong></li>
                         @else
-                            <li>{{ ucfirst($key) }} - not set</li>                    
+                            <li>{{ ucfirst($key) }} - <strong>not set</strong></li>                    
                         @endif
                     @endif
                 @endforeach

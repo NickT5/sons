@@ -16,9 +16,7 @@ class MovieController extends Controller
     
     public function index()
     {
-        // Fetch all movies.
-        //$movies = \App\Movie::all();
-
+        // Fetch seen and not-seen movies.
         $movies_seen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
                         ['user_id' => auth()->user()->id,
                          'seen' => "1"]);
@@ -42,14 +40,8 @@ class MovieController extends Controller
             'seen' => 'boolean'
         ]);
 
-
         // Make Http GET request to a 3rd party API (= OMDb api), to get more information about the movie.
-        $http_client = new \GuzzleHttp\Client();
-        $omdbapi = "http://www.omdbapi.com/?apikey=88076cbf";
-        $title = str_replace(' ', '+', $data['title']);
-        $uri = "{$omdbapi}&t={$title}";
-        $response = $http_client->get($uri);
-        $info = json_decode($response->getBody()->getContents(), true);
+        $info = $this->call_omdb_api($data);
 
         if(!isset($info['Error']))
         {
@@ -65,7 +57,7 @@ class MovieController extends Controller
 
         $movie = auth()->user()->movies()->create($data);  // Insert a new movie record with request data and the authenticated user.
         
-        return redirect('/movies');
+        return view('movie.show', compact('movie'));
     }
 
     public function show(\App\Movie $movie)
@@ -85,6 +77,31 @@ class MovieController extends Controller
             'seen' => 'boolean'
         ]);
 
+        // Make Http GET request to a 3rd party API (= OMDb api), to get more information about the movie.
+        $info = $this->call_omdb_api($data);
+
+        if(!isset($info['Error']))
+        {
+            $data['year'] = $info['Year'];
+            $data['genre'] = $info['Genre'];
+            $data['stars'] = $info['Actors'];
+            $data['poster'] = $info['Poster'];
+            $data['rating'] = $info['imdbRating'];
+            $data['runtime'] = $info['Runtime'];
+            $data['director'] = $info['Director'];
+            $data['description'] = $info['Plot'];
+        }
+        else{
+            $data['year'] = null;
+            $data['genre'] = null;
+            $data['stars'] = null;
+            $data['poster'] = null;
+            $data['rating'] = null;
+            $data['runtime'] = null;
+            $data['director'] = null;
+            $data['description'] = null;
+        }
+
         $movie->update($data);
         
         return redirect('/movies');
@@ -94,6 +111,19 @@ class MovieController extends Controller
     {
         $movie->delete();
         return redirect('/movies');
+    }
+
+    public static function call_omdb_api($data)
+    {
+         // Make a Http GET request to a 3rd party API (= OMDb api) to get more information about the movie.
+         $client = new \GuzzleHttp\Client();
+         $key = env("API_OMDB_KEY");
+         $api = "http://www.omdbapi.com/?apikey={$key}";
+         $title = str_replace(' ', '+', $data['title']);
+         $uri = "{$api}&t={$title}";
+
+         $response = $client->get($uri);
+         return json_decode($response->getBody()->getContents(), true);
     }
 
 }

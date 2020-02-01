@@ -6,7 +6,7 @@
 
     <div class="row">
         <div class="col-md-3">
-            @if( isset($movie->poster ))
+            @if( isset($movie->poster) )
                 <img class="img-fluid" src="data:image/jpeg;base64,{{ base64_encode(file_get_contents($movie->poster)) }}" style="display:block; max-width:500px; max-height:350px; width: auto; height: auto;" alt="Movie poster">
             @else
                 <img class="img-fluid" src="{{ asset('img/default-movie-poster.jpg') }}" style="width:750; height:500;" alt="Movie poster">

@@ -61,38 +61,38 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+            .my-divider{
+                width: 300px;
+                border: 5px solid #fed766;
+                border-radius: 5px;
+            }
+            .slogan{
+                width: 370px;
+            }
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/movies') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+        <div class="container">
+            <div class="flex-center position-ref full-height">
+                @if (Route::has('login'))
+                    <div class="top-right links">
+                        @auth
+                            <a href="{{ url('/movies') }}">My Movies</a>
+                        @else
+                            <a href="{{ route('login') }}">Login</a>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}">Register</a>
+                            @endif
+                        @endauth
+                    </div>
+                @endif
+            
+                <div class="content">
+                    <div class="title">SONS</div>
+                    <h2>Seen Or Not Seen</h2>
+                    <hr class="divider my-divider">
+                    <p class="slogan">Keep an overview for yourself of the movies you've seen and the movies you want to see.</p>
                 </div>
             </div>
         </div>

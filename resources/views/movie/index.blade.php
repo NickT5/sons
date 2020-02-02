@@ -1,11 +1,27 @@
 @extends('layouts.app')
 
+@section('scripts')
+    <script src="https://use.fontawesome.com/7dc64d3e62.js"></script>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="card">
-                <div class="card-header">{{ auth()->user()->name }}'s dashboard</div>
+                <div class="card-header">{{ auth()->user()->name }}'s overview
+                    <form action="/search" method="get" class="d-flex">
+                        <select class="custom-select"  name="filter_by">
+                            <option value="" disabled selected>Filter by</option>
+                            <option value="genre">Genre</option>
+                            <option value="title">Title</option>
+                            <option value="year">Year</option>
+                        </select>
+
+                        <input type="text" class="form-control" placeholder="Search..." name="q" autocomplete="off">
+                        <button type="submit" class="btn btn-outline-success"><i class="fa fa-search "></i></button>
+                    </form>
+                </div>
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-baseline">

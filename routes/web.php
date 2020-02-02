@@ -26,3 +26,5 @@ Route::get('/movies/{movie}', 'MovieController@show');
 Route::get('/movies/{movie}/edit', 'MovieController@edit');
 Route::patch('/movies/{movie}', 'MovieController@update');
 Route::delete('/movies/{movie}', 'MovieController@destroy');
+
+Route::get('/search', 'MovieController@search');

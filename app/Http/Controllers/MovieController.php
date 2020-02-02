@@ -113,6 +113,17 @@ class MovieController extends Controller
         return redirect('/movies');
     }
 
+    public function search(Request $request)
+    {
+        $filter_by = $request->input('filter_by');
+        $q = $request->input('q');
+
+        dd( \App\Movie::where($filter_by, 'LIKE',  "%{$q}%")         # cant just check on $q because genre record can be string of "Action, Drama, Thriller", SQL WHERE LIKE?
+                        ->orderBy('title')
+                        ->get() );
+
+    }
+
     public static function call_omdb_api($data)
     {
          // Make a Http GET request to a 3rd party API (= OMDb api) to get more information about the movie.

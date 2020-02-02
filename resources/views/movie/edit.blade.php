@@ -26,6 +26,7 @@
                                     <input class="form-check-input" name="seen" value="1" type="checkbox" id="seen">
                                 @endif
                                 <label class="form-check-label" for="seen">Have you seen the movie?</label>
+                            </div>
                         </div>
 
                         <div class="form-row mt-4">
@@ -66,8 +67,6 @@
                             <textarea class="form-control" id="description"  disabled> {{$movie->description}} </textarea>
                         </div>
 
-
-                        </div>
 
                         <div class="d-flex justify-content-between">
                             <a href='/movies/{{$movie->id}}' class="btn btn-primary">Go back</a>

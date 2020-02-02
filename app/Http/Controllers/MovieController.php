@@ -17,12 +17,15 @@ class MovieController extends Controller
     public function index()
     {
         // Fetch seen and not-seen movies.
-        $movies_seen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
+        /*$movies_seen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
                         ['user_id' => auth()->user()->id,
                          'seen' => "1"]);
         $movies_notseen = DB::select("SELECT * FROM movies WHERE user_id = :user_id AND seen = :seen", 
                         ['user_id' => auth()->user()->id,
                          'seen' => "0"]);
+        */
+        $movies_seen = auth()->user()->movies()->where('seen', '1')->get();
+        $movies_notseen = auth()->user()->movies()->where('seen', '0')->get();
 
         return view('movie.index', compact('movies_seen', 'movies_notseen'));
     }
@@ -62,11 +65,17 @@ class MovieController extends Controller
 
     public function show(\App\Movie $movie)
     {
+        $movie = auth()->user()->movies()->where('id', $movie->id)->first();
+        if($movie == null) abort(404);
+        
         return view('movie.show', compact('movie'));
     }
 
     public function edit(\App\Movie $movie)
     {
+        $movie = auth()->user()->movies()->where('id', $movie->id)->first();
+        if($movie == null) abort(404);
+        
         return view('movie.edit', compact('movie'));
     }
 
@@ -118,9 +127,11 @@ class MovieController extends Controller
         $filter_by = $request->input('filter_by');
         $q = $request->input('q');
 
-        dd( \App\Movie::where($filter_by, 'LIKE',  "%{$q}%")         # cant just check on $q because genre record can be string of "Action, Drama, Thriller", SQL WHERE LIKE?
+        $result = \App\Movie::where($filter_by, 'LIKE',  "%{$q}%")
                         ->orderBy('title')
-                        ->get() );
+                        ->get()      //returns a collection
+                        ->toArray(); //returns collection of items as an array
+        dd($result);
 
     }
 

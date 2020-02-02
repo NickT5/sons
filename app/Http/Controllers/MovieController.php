@@ -75,7 +75,7 @@ class MovieController extends Controller
     {
         $movie = auth()->user()->movies()->where('id', $movie->id)->first();
         if($movie == null) abort(404);
-        
+
         return view('movie.edit', compact('movie'));
     }
 
@@ -124,15 +124,15 @@ class MovieController extends Controller
 
     public function search(Request $request)
     {
-        $filter_by = $request->input('filter_by');
+        $filter_by = $request->input('filter_by') ?? 'title';
         $q = $request->input('q');
 
-        $result = \App\Movie::where($filter_by, 'LIKE',  "%{$q}%")
+        $movies = auth()->user()->movies()->where($filter_by, 'LIKE',  "%{$q}%")
                         ->orderBy('title')
-                        ->get()      //returns a collection
-                        ->toArray(); //returns collection of items as an array
-        dd($result);
+                        ->get(); 
 
+        //dd($movies);
+        return view('movie.search', compact('movies') );
     }
 
     public static function call_omdb_api($data)

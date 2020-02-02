@@ -13,8 +13,8 @@
                     <form action="/search" method="get" class="d-flex">
                         <select class="custom-select"  name="filter_by">
                             <option value="" disabled selected>Filter by</option>
-                            <option value="genre">Genre</option>
                             <option value="title">Title</option>
+                            <option value="genre">Genre</option>
                             <option value="year">Year</option>
                         </select>
 

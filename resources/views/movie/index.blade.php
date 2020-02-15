@@ -35,7 +35,7 @@
                             @forelse($movies_seen as $movie)
                                 <a href='/movies/{{$movie->id}}'><li> {{ $movie->title }} </li></a>
                             @empty
-                                <p>You haven't added any movies yet.</p>
+                                <p>You haven't added any movies here yet.</p>
                             @endforelse
                         </ul>
                     </div>
@@ -46,7 +46,7 @@
                             @forelse($movies_notseen as $movie)
                                 <a href='/movies/{{$movie->id}}'><li> {{ $movie->title }} </li></a>
                             @empty
-                                <p>You haven't added any movies yet.</p>
+                                <p>You haven't added any movies here yet.</p>
                             @endforelse
                         </ul>
                     </div>

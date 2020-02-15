@@ -24,8 +24,12 @@ class MovieController extends Controller
                         ['user_id' => auth()->user()->id,
                          'seen' => "0"]);
         */
-        $movies_seen = auth()->user()->movies()->where('seen', '1')->get();
+        /*$movies_seen = auth()->user()->movies()->where('seen', '1')->get();
         $movies_notseen = auth()->user()->movies()->where('seen', '0')->get();
+        */
+
+        $movies_seen = auth()->user()->movies()->wherePivot('seen', 1)->get();
+        $movies_notseen = auth()->user()->movies()->wherePivot('seen', 0)->get();
 
         return view('movie.index', compact('movies_seen', 'movies_notseen'));
     }
@@ -38,59 +42,89 @@ class MovieController extends Controller
     public function store()
     {
         // Returns an array with the request attributes that meet the required conditions.
-        $data = request()->validate([
+        $validated = request()->validate([
             'title' => 'required|min:2|max:255',
             'seen' => 'boolean'
         ]);
 
         // Make Http GET request to a 3rd party API (= OMDb api), to get more information about the movie.
-        $info = $this->call_omdb_api($data);
+        $info = $this->call_omdb_api($validated);
 
+        // Check if omdb api found a valid result.
         if(!isset($info['Error']))
         {
-            $data['year'] = $info['Year'];
-            $data['genre'] = $info['Genre'];
-            $data['stars'] = $info['Actors'];
-            $data['poster'] = $info['Poster'];
-            $data['rating'] = $info['imdbRating'];
-            $data['runtime'] = $info['Runtime'];
-            $data['director'] = $info['Director'];
-            $data['description'] = $info['Plot'];
+            /*
+            $movie = new \App\Movie;
+
+            $movie->title = $validated['title'];
+            $movie->year = $info['Year'];
+            $movie->genre = $info['Genre'];
+            $movie->stars = $info['Actors'];
+            $movie->poster = $info['Poster'];
+            $movie->rating = $info['imdbRating'];
+            $movie->runtime = $info['Runtime'];
+            $movie->director = $info['Director'];
+            $movie->description = $info['Plot'];
+
+            $movie->save();*/
+            
+            /*The firstOrCreate method will attempt to locate a database record using the given column / value pairs. 
+            If the model can not be found in the database, a record will be inserted with the attributes from the first parameter,
+            along with those in the optional second parameter.*/
+            $movie = \App\Movie::firstOrCreate(['title' => $validated['title'],
+                                             'year' => $info['Year'],
+                                             'genre' => $info['Genre'],
+                                             'stars' => $info['Actors'],
+                                            'poster' => $info['Poster'],
+                                            'rating' => $info['imdbRating'],
+                                            'runtime' => $info['Runtime'],
+                                            'director' => $info['Director'],
+                                            'description' => $info['Plot'],
+                                            'director' => $info['Director']]);
+
+            // Attach movie id and user id to pivot table if record doesn't exists.
+            if(! auth()->user()->movies()->where(['movie_id' => $movie->id, 'user_id' => auth()->user()->id])->exists())
+            {
+                auth()->user()->movies()->attach($movie->id, ['seen' => $validated['seen']]);
+            }
+
+            $seen = $validated['seen'];
         }
 
-        $movie = auth()->user()->movies()->create($data);  // Insert a new movie record with request data and the authenticated user.
-        
-        return view('movie.show', compact('movie'));
+        return view('movie.show', compact('movie', 'seen'));
     }
 
     public function show(\App\Movie $movie)
     {
-        $movie = auth()->user()->movies()->where('id', $movie->id)->first();
+        $movie = auth()->user()->movies()->where('movie_id', $movie->id)->first();
         if($movie == null) abort(404);
-        
-        return view('movie.show', compact('movie'));
+        $seen = $movie->pivot->seen;
+        return view('movie.show', compact('movie', 'seen'));
     }
 
     public function edit(\App\Movie $movie)
     {
-        $movie = auth()->user()->movies()->where('id', $movie->id)->first();
+        $movie = auth()->user()->movies()->where('movie_id', $movie->id)->first();
         if($movie == null) abort(404);
+        $seen = $movie->pivot->seen;
 
-        return view('movie.edit', compact('movie'));
+        return view('movie.edit', compact('movie', 'seen'));
     }
 
     public function update(\App\Movie $movie)
     {
-        $data = request()->validate([
-            'title' => 'required|min:2|max:255',
+        $validated = request()->validate([
             'seen' => 'boolean'
         ]);
 
+        auth()->user()->movies()->updateExistingPivot($movie->id, ['seen' => $validated['seen']]);
+
         // Make Http GET request to a 3rd party API (= OMDb api), to get more information about the movie.
-        $info = $this->call_omdb_api($data);
+        /*$info = $this->call_omdb_api($validated);
 
         if(!isset($info['Error']))
         {
+            $data['title'] = $validated['title'];
             $data['year'] = $info['Year'];
             $data['genre'] = $info['Genre'];
             $data['stars'] = $info['Actors'];
@@ -112,13 +146,16 @@ class MovieController extends Controller
         }
 
         $movie->update($data);
+        */
         
         return redirect('/movies');
     }
 
     public function destroy(\App\Movie $movie)
     {
-        $movie->delete();
+        //$movie->delete();
+        auth()->user()->movies()->detach($movie->id);
+
         return redirect('/movies');
     }
 
@@ -131,7 +168,6 @@ class MovieController extends Controller
                         ->orderBy('title')
                         ->get(); 
 
-        //dd($movies);
         return view('movie.search', compact('movies') );
     }
 

@@ -16,7 +16,6 @@ class CreateMoviesTable extends Migration
         Schema::create('movies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->boolean('seen');
             $table->string('year')->nullable();
             $table->string('genre')->nullable();
             $table->string('stars')->nullable();
@@ -25,8 +24,24 @@ class CreateMoviesTable extends Migration
             $table->string('runtime')->nullable();
             $table->string('director')->nullable();
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('user_id'); // Foreign key to User.php, default foreign key is relation method with _id suffix.
             $table->timestamps();
+
+            $table->unique(['title', 'year', 'director']);
+
+        });
+
+        // Pivot tabel.
+        Schema::create('movie_user', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('movie_id');
+            $table->unsignedBigInteger('user_id');
+            $table->boolean('seen');
+            $table->timestamps();
+
+            $table->unique(['movie_id', 'user_id']);
+
+            $table->foreign('movie_id')->references('id')->on('movies')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

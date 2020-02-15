@@ -16,20 +16,18 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {        
-        // Create a dummy user.
+        // Create a user.
         $user = User::create([
-            'name' => 'Nick',
-            'email' => 'nick@example.com',
+            'name' => 'Test',
+            'email' => 'test@example.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('nick')
+            'password' => Hash::make('test')
         ]);
 
-        // Create a few dummy movies that the user has or hasn't seen.
+        // Create a few movies.
         $info = MovieController::call_omdb_api(['title'=>'John+Wick']);
-        Movie::create([
+        $movie1 = Movie::create([
             'title' => 'John Wick',
-            'seen' => '1',
-            'user_id' => $user->id,
             'year' => $info['Year'],
             'genre' => $info['Genre'],
             'stars' => $info['Actors'],
@@ -41,10 +39,8 @@ class UsersTableSeeder extends Seeder
         ]);
 
         $info = MovieController::call_omdb_api(['title'=>'Knives+Out']);
-        Movie::create([
+        $movie2 = Movie::create([
             'title' => 'Knives Out',
-            'seen' => '0',
-            'user_id' => $user->id,
             'year' => $info['Year'],
             'genre' => $info['Genre'],
             'stars' => $info['Actors'],
@@ -56,10 +52,8 @@ class UsersTableSeeder extends Seeder
         ]);
 
         $info = MovieController::call_omdb_api(['title'=>'1917']);
-        Movie::create([
+        $movie3 = Movie::create([
             'title' => '1917',
-            'seen' => '0',
-            'user_id' => $user->id,
             'year' => $info['Year'],
             'genre' => $info['Genre'],
             'stars' => $info['Actors'],
@@ -69,5 +63,11 @@ class UsersTableSeeder extends Seeder
             'director' => $info['Director'],
             'description' => $info['Plot']
         ]);
+
+        //Link movies with the user.
+        $user->movies()->attach($movie1, ['seen' => 1]);
+        $user->movies()->attach($movie2, ['seen' => 0]);
+        $user->movies()->attach($movie3, ['seen' => 0]);
+
     }
 }

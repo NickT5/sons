@@ -38,9 +38,9 @@ class User extends Authenticatable
     ];
 
     // Define relation to a Movie. 
-    // Get the movie record(s) associated with the user.
+    // Get the movie record(s) associated with the user. 
     public function movies()
     {
-        return $this->hasMany(Movie::class);
+        return $this->belongsToMany(Movie::class, 'movie_user')->withPivot('seen');
     }
 }

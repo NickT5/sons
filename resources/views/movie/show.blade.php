@@ -29,7 +29,7 @@
 
             <h3>Info</h3>
             <p>Have you seen this movie?
-                @if($movie->seen == '1')
+                @if($seen == '1')
                     <strong>Yes</strong>
                 @else
                     <strong>No</strong>

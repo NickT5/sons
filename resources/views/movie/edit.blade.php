@@ -13,14 +13,14 @@
                         @method('PATCH')
                         <div class="form-group">
                             <label for="title">Title</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter a movie title" value="{{$movie->title}}" autocomplete="off">
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter a movie title" value="{{$movie->title}}" autocomplete="off" disabled>
                             @error('title') <p style="color: red;">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="form-group">
                             <div class="form-check">
                                 <input type="hidden" name="seen" value="0">
-                                @if( $movie->seen == "1" )
+                                @if( $seen == "1" )
                                     <input class="form-check-input" name="seen" value="1" type="checkbox" id="seen" checked>
                                 @else
                                     <input class="form-check-input" name="seen" value="1" type="checkbox" id="seen">
